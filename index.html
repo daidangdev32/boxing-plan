@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Boxing Camp</title>
+  <meta name="description" content="A 12-week Bivol-style boxing plan: this week's sessions, a round timer that tells you what to throw, and a weekly benchmark log.">
+  <meta name="theme-color" content="#E4E9EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E1322" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Boxing Camp">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" href="fonts/sofia-sans-extra-condensed-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/sofia-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="#today" aria-label="Boxing Camp, today">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" class="brand-mark-bg"/><circle cx="16" cy="17" r="8.5" class="brand-mark-ring"/><path d="M16 12.5v5l3.5 2.5" class="brand-mark-hand"/><path d="M13 6.5h6" class="brand-mark-hand"/></svg>
+        <span class="brand-name">Boxing Camp</span>
+      </a>
+      <nav class="tabs" aria-label="Sections">
+        <a href="#today" data-tab="today">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg>
+          <span>Today</span>
+        </a>
+        <a href="#plan" data-tab="plan">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+          <span>Plan</span>
+        </a>
+        <a href="#timer" data-tab="timer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M10 2.5h4"/></svg>
+          <span>Timer</span>
+          <i class="tab-live" id="tab-live" hidden></i>
+        </a>
+        <a href="#log" data-tab="log">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M5 15l4.5-4.5 3.5 3L19 7"/></svg>
+          <span>Log</span>
+        </a>
+        <a href="#drills" data-tab="drills">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg>
+          <span>Drills</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- TODAY -->
+    <section class="view" id="view-today" data-view="today" aria-labelledby="today-title">
+      <div class="today-grid">
+        <div class="today-main">
+          <p class="dateline" id="today-date">Today</p>
+          <h1 class="display" id="today-title">Week 1 of 12</h1>
+          <p class="lede" id="today-phase">Foundation.</p>
+
+          <button type="button" class="clock clock-hero" id="hero-clock" data-state="work" aria-describedby="hero-clock-note">
+            <span class="clock-hero-main">
+              <span class="clock-digits" id="hero-round"></span>
+              <span class="clock-caption">Round</span>
+            </span>
+            <span class="clock-hero-side">
+              <span class="clock-digits clock-digits-rest" id="hero-rest"></span>
+              <span class="clock-caption">Rest</span>
+            </span>
+          </button>
+          <p class="note" id="hero-clock-note">Rounds this week. Move up a round length only when your form holds for the full round.</p>
+
+          <div class="camp" aria-labelledby="camp-title">
+            <h2 class="camp-title" id="camp-title">Camp</h2>
+            <div class="strip" id="today-strip"></div>
+            <p class="strip-legend">Hatched weeks are deloads. A dot means all four sessions are done. Tap a week to see its plan.</p>
+          </div>
+        </div>
+
+        <div class="today-side">
+          <section class="next-up" aria-labelledby="next-title">
+            <h2 class="section-title" id="next-title">Up next</h2>
+            <div id="next-body"></div>
+          </section>
+
+          <section class="this-week" aria-labelledby="week-list-title">
+            <h2 class="section-title" id="week-list-title">This week</h2>
+            <ul class="session-list" id="week-sessions"></ul>
+            <p class="note" id="week-count"></p>
+          </section>
+
+          <section class="start-date" aria-labelledby="start-title">
+            <h2 class="section-title" id="start-title">Camp start</h2>
+            <div class="field-inline">
+              <label for="start-date">Week 1 begins</label>
+              <input type="date" id="start-date">
+            </div>
+            <p class="note" id="start-note"></p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAN -->
+    <section class="view" id="view-plan" data-view="plan" aria-labelledby="plan-title" hidden>
+      <header class="view-head">
+        <h1 class="display" id="plan-title">The plan</h1>
+        <p class="lede">Max 4 sessions a week: 3 at home and 1 bag day at the gym. Suggested order: A, B, bag day, C, with rest days anywhere in between.</p>
+      </header>
+      <div class="plan-pick">
+        <div class="strip strip-pick" id="plan-strip" role="group" aria-label="Choose a week"></div>
+        <p class="strip-legend">Hatched weeks are deloads.</p>
+      </div>
+      <div id="plan-week"></div>
+
+      <div class="plan-ref">
+        <section aria-labelledby="rules-title">
+          <h2 class="section-title" id="rules-title">Every round</h2>
+          <ul class="rules" id="rules-list"></ul>
+        </section>
+        <section aria-labelledby="rounds-title">
+          <h2 class="section-title" id="rounds-title">Round lengths</h2>
+          <div class="table-scroll">
+            <table class="table" id="rounds-table">
+              <thead><tr><th scope="col">Weeks</th><th scope="col">Phase</th><th scope="col">Round</th><th scope="col">Rest</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="note">Weeks 4 and 8 are deloads: drop one round and halve the conditioning.</p>
+        </section>
+        <section aria-labelledby="structure-title">
+          <h2 class="section-title" id="structure-title">Session structure</h2>
+          <div class="structure-grid">
+            <div class="table-scroll">
+              <table class="table" id="home-structure">
+                <caption>Home session, 30 min</caption>
+                <thead><tr><th scope="col">Min</th><th scope="col">Block</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="table-scroll">
+              <table class="table" id="bag-structure">
+                <caption>Full bag session, 60 min</caption>
+                <thead><tr><th scope="col">Min</th><th scope="col">Block</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- TIMER -->
+    <section class="view" id="view-timer" data-view="timer" aria-labelledby="timer-title" hidden>
+      <h1 class="visually-hidden" id="timer-title">Round timer</h1>
+      <div class="timer-layout">
+        <div class="timer-main">
+          <div class="timer-pick">
+            <div class="field">
+              <label for="pick-week">Week</label>
+              <select id="pick-week"></select>
+            </div>
+            <div class="field field-grow">
+              <label for="pick-seq">Timer</label>
+              <select id="pick-seq"></select>
+            </div>
+          </div>
+
+          <div class="custom-panel" id="custom-panel" hidden>
+            <div class="stepper" data-key="rounds">
+              <span class="stepper-label" id="lbl-rounds">Rounds</span>
+              <button type="button" class="step-btn" data-step="-1" aria-label="Fewer rounds">−</button>
+              <output class="stepper-value" id="val-rounds" aria-labelledby="lbl-rounds">6</output>
+              <button type="button" class="step-btn" data-step="1" aria-label="More rounds">+</button>
+            </div>
+            <div class="stepper" data-key="round">
+              <span class="stepper-label" id="lbl-round">Round</span>
+              <button type="button" class="step-btn" data-step="-1" aria-label="Shorter rounds">−</button>
+              <output class="stepper-value" id="val-round" aria-labelledby="lbl-round">2:00</output>
+              <button type="button" class="step-btn" data-step="1" aria-label="Longer rounds">+</button>
+            </div>
+            <div class="stepper" data-key="rest">
+              <span class="stepper-label" id="lbl-rest">Rest</span>
+              <button type="button" class="step-btn" data-step="-1" aria-label="Shorter rest">−</button>
+              <output class="stepper-value" id="val-rest" aria-labelledby="lbl-rest">1:00</output>
+              <button type="button" class="step-btn" data-step="1" aria-label="Longer rest">+</button>
+            </div>
+          </div>
+
+          <div class="clock clock-full" id="clock" data-state="idle">
+            <div class="lamps" aria-hidden="true">
+              <span class="lamp lamp-work"><i></i>Round</span>
+              <span class="lamp lamp-warn"><i></i>10 s</span>
+              <span class="lamp lamp-rest"><i></i>Rest</span>
+            </div>
+            <div class="clock-digits" id="clock-digits"></div>
+            <div class="clock-bar" aria-hidden="true"><i id="clock-bar-fill"></i></div>
+          </div>
+
+          <div class="now" aria-live="polite" aria-atomic="false">
+            <p class="now-seq" id="now-seq"></p>
+            <h2 class="now-title" id="now-title">Get ready</h2>
+            <p class="now-cue" id="now-cue" hidden></p>
+            <p class="now-detail" id="now-detail"></p>
+          </div>
+          <div class="now-input" id="now-input" hidden>
+            <label for="now-input-field" id="now-input-label">Push-ups</label>
+            <input type="number" inputmode="numeric" min="0" id="now-input-field">
+            <span class="unit" id="now-input-unit">reps</span>
+          </div>
+          <p class="now-next" id="now-next"></p>
+
+          <div class="controls">
+            <button type="button" class="btn btn-quiet" id="btn-prev">Back</button>
+            <button type="button" class="btn btn-go" id="btn-go">Start</button>
+            <button type="button" class="btn btn-quiet" id="btn-next">Skip</button>
+          </div>
+          <button type="button" class="btn btn-stop" id="btn-broke" hidden>Form broke</button>
+
+          <div class="done-panel" id="done-panel" hidden>
+            <h2 class="section-title">Done</h2>
+            <p id="done-text"></p>
+            <form class="results" id="results-form" hidden novalidate>
+              <p class="note" id="results-note">Check your numbers, then save them to the log.</p>
+              <div class="results-grid" id="results-fields"></div>
+              <button type="submit" class="btn btn-go" id="btn-save-results">Save to log</button>
+            </form>
+            <div class="done-actions">
+              <button type="button" class="btn btn-go" id="btn-mark-done" hidden>Mark session done</button>
+              <button type="button" class="btn btn-quiet" id="btn-again">Run it again</button>
+            </div>
+          </div>
+
+          <div class="timer-options">
+            <label class="check"><input type="checkbox" id="opt-sound" checked> <span>Sound</span></label>
+            <label class="check"><input type="checkbox" id="opt-voice"> <span>Read out each round</span></label>
+          </div>
+          <p class="note">Space starts and pauses. N skips ahead. The screen stays on while the timer runs, where your browser allows it.</p>
+        </div>
+
+        <details class="runsheet" id="runsheet">
+          <summary><span class="runsheet-title">Run sheet</span> <span class="runsheet-total" id="runsheet-total"></span></summary>
+          <ol class="runsheet-list" id="runsheet-list"></ol>
+        </details>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section class="view" id="view-log" data-view="log" aria-labelledby="log-title" hidden>
+      <header class="view-head">
+        <h1 class="display" id="log-title">Benchmarks</h1>
+        <p class="lede">Test every week on bag day, after the warm-up, with 3–5 min rest between tests: push-ups, rope, burpees, then hard rounds. Run the 3 km on a rest day. Weigh in the morning before eating.</p>
+      </header>
+
+      <div class="log-layout">
+        <form class="log-form" id="log-form" novalidate>
+          <div class="log-form-head">
+            <div class="field">
+              <label for="log-week">Week</label>
+              <select id="log-week"></select>
+            </div>
+            <div class="field">
+              <label for="log-date">Date</label>
+              <input type="date" id="log-date">
+            </div>
+          </div>
+          <div class="log-fields" id="log-fields"></div>
+          <p class="note deload-note" id="log-deload" hidden>Deload week: skip burpees and hard rounds.</p>
+          <p class="field-error" id="log-error" role="alert" hidden></p>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-go" id="btn-save-week">Save week 1</button>
+            <button type="button" class="btn btn-quiet" id="btn-copy-week">Copy for Notes</button>
+          </div>
+        </form>
+
+        <section class="log-chart" aria-labelledby="chart-title">
+          <div class="metric-tabs" id="metric-tabs" role="tablist" aria-label="Benchmark"></div>
+          <h2 class="chart-title" id="chart-title">Max push-ups</h2>
+          <p class="chart-sub" id="chart-sub"></p>
+          <div class="chart" id="chart"></div>
+        </section>
+      </div>
+
+      <section class="log-all" aria-labelledby="all-title">
+        <h2 class="section-title" id="all-title">All weeks</h2>
+        <div class="table-scroll">
+          <table class="table table-log" id="log-table"></table>
+        </div>
+        <p class="note">Gold marks your best result. Your log stays in this browser, so back it up before switching phones or clearing your browser data.</p>
+        <div class="backup">
+          <button type="button" class="btn btn-quiet" id="btn-copy-all">Copy all for Notes</button>
+          <button type="button" class="btn btn-quiet" id="btn-csv">Export CSV</button>
+          <button type="button" class="btn btn-quiet" id="btn-backup">Download backup</button>
+          <label class="btn btn-quiet file-btn" for="restore-file">Restore backup</label>
+          <input type="file" id="restore-file" accept="application/json,.json" class="visually-hidden">
+        </div>
+      </section>
+    </section>
+
+    <!-- DRILLS -->
+    <section class="view" id="view-drills" data-view="drills" aria-labelledby="drills-title" hidden>
+      <header class="view-head">
+        <h1 class="display" id="drills-title">Drills and terms</h1>
+        <p class="lede">What each line of the plan asks you to do.</p>
+      </header>
+
+      <section class="drill-block" aria-labelledby="punch-title">
+        <h2 class="section-title" id="punch-title">Punch numbers</h2>
+        <p class="note">Orthodox stance, left foot forward. Southpaws keep the numbers and swap hands.</p>
+        <ol class="punches" id="punch-list"></ol>
+      </section>
+
+      <section class="drill-block" aria-labelledby="foot-title">
+        <h2 class="section-title" id="foot-title">Footwork like Bivol</h2>
+        <div class="two-col">
+          <dl class="terms" id="foot-principles"></dl>
+          <div>
+            <h3 class="sub-title">Drills</h3>
+            <dl class="terms" id="foot-drills"></dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="drill-block" aria-labelledby="terms-title">
+        <h2 class="section-title" id="terms-title">Terms in the plan</h2>
+        <dl class="terms terms-grid" id="terms-list"></dl>
+      </section>
+
+      <section class="drill-block" aria-labelledby="morning-title">
+        <h2 class="section-title" id="morning-title">Morning routine</h2>
+        <p class="note" id="morning-note"></p>
+        <ol class="morning-list" id="morning-list"></ol>
+        <ul class="rules" id="morning-rules"></ul>
+        <button type="button" class="btn btn-quiet" id="btn-morning">Open in timer</button>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <p>Wrap your hands for every bag round. Stop if you feel sharp pain.</p>
+    <div class="foot-row">
+      <div class="field-inline">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      <a href="https://github.com/daidangdev32/boxing-plan">Source on GitHub</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/plan.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
