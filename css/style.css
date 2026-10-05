@@ -763,7 +763,7 @@ input[aria-invalid="true"] { border-color: var(--red); }
   .timer-layout { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; gap: 40px; }
 }
 .timer-main { display: grid; gap: 16px; max-width: 640px; width: 100%; }
-.timer-pick { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 12px; }
+.timer-pick { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; }
 .timer-pick select { width: 100%; }
 
 .custom-panel { display: flex; flex-wrap: wrap; gap: 10px 22px; }

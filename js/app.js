@@ -672,11 +672,11 @@
   function sessionOptions(week) {
     var c = P.sessionInfo(week, 'C');
     return [
-      ['A', 'Session A: jab & range'],
-      ['B', 'Session B: counter power'],
-      ['BAG-tests', 'Bag day with tests'],
-      ['BAG-full', 'Bag day, full session'],
-      ['C', week === 12 ? 'Session C: fight simulation' : 'Session C: ' + c.name.toLowerCase()]
+      ['A', 'A: jab & range'],
+      ['B', 'B: counter power'],
+      ['BAG-tests', 'Bag day: test day'],
+      ['BAG-full', 'Bag day: full session'],
+      ['C', week === 12 ? 'C: fight simulation' : 'C: ' + c.name.toLowerCase()]
     ];
   }
 
@@ -697,7 +697,7 @@
     clear(wk);
     var cur = rawWeek();
     for (var w = 1; w <= P.WEEKS; w++) {
-      wk.appendChild(el('option', { value: String(w), text: 'Week ' + w + (w === cur ? ' (now)' : '') }));
+      wk.appendChild(el('option', { value: String(w), text: String(w) + (w === cur ? ' (now)' : ''), 'aria-label': 'Week ' + w + (w === cur ? ', this week' : '') }));
     }
     wk.value = String(ui.timerWeek);
     var sel = $('pick-seq');
