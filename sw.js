@@ -2,13 +2,13 @@
  * Offline support. Network first, so updates show up straight away when you're
  * online; the cached copy is used when the gym has no signal.
  */
-var CACHE = 'boxing-camp-v1';
+var CACHE = 'boxing-camp-v2';
 var ASSETS = [
   './',
   'index.html',
   'css/style.css',
   'js/plan.js',
-  'js/sound.js',
+  'js/signal.js',
   'js/timer.js',
   'js/app.js',
   'manifest.webmanifest',

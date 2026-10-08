@@ -385,7 +385,7 @@
   }
 
   function prepSeg(detail) {
-    return { kind: 'prep', title: 'Get ready', detail: detail || 'The bell starts the first block.', dur: 10 };
+    return { kind: 'prep', title: 'Get ready', detail: detail || 'The first block starts when this reaches zero.', dur: 10 };
   }
   function restSeg(secs, title) {
     return { kind: 'rest', title: title || 'Rest', detail: '', dur: secs };
@@ -519,7 +519,7 @@
     if (mode === 'tests') {
       segs.push({ kind: 'manual', title: 'Test: max push-ups', tag: 'Push-ups', detail: 'One set with good form. Stop when your form breaks, then enter the number.', input: { key: 'pushups', label: 'Push-ups', unit: 'reps' } });
       segs.push(restSeg(180, 'Rest before the rope test'));
-      segs.push({ kind: 'manual', title: 'Test: jump rope, unbroken', tag: 'Rope test', detail: 'Start skipping at the bell. Tap Stop when you trip or stop.', record: 'rope', nextLabel: 'Stop' });
+      segs.push({ kind: 'manual', title: 'Test: jump rope, unbroken', tag: 'Rope test', detail: 'Start skipping now. Tap Stop when you trip or stop.', record: 'rope', nextLabel: 'Stop' });
       segs.push(restSeg(180, 'Rest'));
       if (!deload) {
         segs.push({ kind: 'work', warn: true, title: 'Test: burpees in 3 min', tag: 'Burpees', detail: 'Count every burpee.', dur: 180, cues: [] });

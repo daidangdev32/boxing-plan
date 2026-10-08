@@ -8,7 +8,7 @@ A 12-week Bivol-style boxing plan that lives on your phone: what to train today,
 
 - **Today.** The current week, this week's round and rest lengths on a gym-style clock, the next session up, and a checklist for the week's four sessions (A, B, bag day, C).
 - **Plan.** Every week of the camp. Pick a week to see the home sessions round by round, bag day as a test day or a full session, the deload changes in weeks 4 and 8, and week 12's fight simulation.
-- **Timer.** Runs a whole session: warm-up, rounds with that round's drill on screen, rests that show what's next, conditioning and core. Bell at the start and end of each round, a clapper 10 seconds before the bell, beeps when a drill switches (sprints, counters), and optional voice cues. On test day it records your push-ups, rope time, burpees and hard rounds as you go. The screen stays on while it runs, where the browser allows it.
+- **Timer.** Runs a whole session: warm-up, rounds with that round's drill on screen, rests that show what's next, conditioning and core. It's silent, so music from another app keeps playing: the screen flashes red when a round starts, amber 10 seconds before the end of a round and blue when rest begins, and Android phones vibrate too. On test day it records your push-ups, rope time, burpees and hard rounds as you go. The screen stays on while it runs, where the browser allows it.
 - **Log.** Weekly benchmarks with a chart for each test, best results in gold, *Copy for Notes* in the same format as the Apple Notes tracker, CSV export, and backup and restore.
 - **Drills.** Punch numbers, Bivol footwork principles and drills, every term the plan uses, and an optional morning routine.
 
@@ -30,7 +30,7 @@ A 12-week Bivol-style boxing plan that lives on your phone: what to train today,
 
 Open the site on your phone and add it to your home screen (Share → Add to Home Screen on iPhone). It works offline after the first visit, which helps in a gym with bad signal.
 
-Turn the ringer on, or the sound may be quiet. Tap **Start** once so the phone allows the bell. The timer keeps time against the clock, so it stays accurate if the phone dims or you switch apps.
+Play your own music while you train: the timer never makes a sound. Keep the phone where you can see it, since round changes show as screen flashes. The timer keeps time against the clock, so it stays accurate if the phone dims or you switch apps.
 
 Everything you log stays in your browser's local storage on that device. Use **Download backup** and **Restore backup** in the Log to move it between devices, or **Copy all for Notes** to keep a copy in Apple Notes.
 
@@ -52,7 +52,7 @@ Then open http://localhost:8000.
 | `css/style.css` | All styles, with light and dark themes |
 | `js/plan.js` | The plan data, plus builders that turn a week and session into a readable plan and a timer sequence |
 | `js/timer.js` | The round timer engine |
-| `js/sound.js` | Bell, clapper and beeps made with the Web Audio API |
+| `js/signal.js` | Silent timer signals: screen flashes and vibration |
 | `js/app.js` | Views, the log, the chart and saved state |
 | `sw.js` | Offline cache (network first, so updates show straight away) |
 | `fonts/` | Sofia Sans and Sofia Sans Extra Condensed, self-hosted |

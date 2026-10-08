@@ -6,7 +6,7 @@
 (function (Camp) {
   'use strict';
 
-  var Sound = Camp.Sound;
+  var Signal = Camp.Signal;
 
   function now() { return (window.performance && performance.now) ? performance.now() : Date.now(); }
 
@@ -113,12 +113,11 @@
 
   Engine.prototype.start = function () {
     if (!this.seq || this.done || this.running) { return; }
-    Sound.unlock();
     this.running = true;
     this.base = now() - this.held * 1000;
     if (!this.flags.entered) {
       this.flags.entered = true;
-      this.enterSound(this.segment(), true);
+      this.signalEnter(this.segment());
     }
     this.loop();
     this.lockScreen();
@@ -177,7 +176,7 @@
     this.goto(this.idx - 1, false);
   };
 
-  Engine.prototype.goto = function (i, sound) {
+  Engine.prototype.goto = function (i, signal) {
     if (!this.seq) { return; }
     if (i >= this.seq.segments.length) { this.finish(); return; }
     this.idx = Math.max(0, i);
@@ -185,7 +184,7 @@
     this.flags = { entered: this.running };
     this.held = 0;
     this.base = now();
-    if (this.running && sound !== false) { this.enterSound(this.segment(), true); }
+    if (this.running && signal !== false) { this.signalEnter(this.segment()); }
     this.emit('segment');
   };
 
@@ -199,7 +198,7 @@
     while (j < this.seq.segments.length && this.seq.segments[j].test) { j += 1; }
     this.emit('results');
     if (j >= this.seq.segments.length) { this.finish(); return; }
-    if (this.running) { Sound.bell(3); }
+    if (this.running) { Signal.roundEnd(); }
     this.goto(j, false);
     this.flags.entered = true;
   };
@@ -218,36 +217,19 @@
     this.halt();
     this.idx = this.seq.segments.length - 1;
     this.held = 0;
-    Sound.bell(3);
-    Sound.buzz([300, 120, 300]);
-    Sound.say('Session complete.');
+    Signal.done();
     this.releaseScreen();
     this.emit('done');
   };
 
-  Engine.prototype.enterSound = function (seg, loud) {
-    if (!seg || !loud) { return; }
+  /* Show that a new block has begun: a round, another timed block or a tap step. */
+  Engine.prototype.signalEnter = function (seg) {
+    if (!seg) { return; }
     if (seg.kind === 'work' && seg.bell) {
-      Sound.bell(1);
-      Sound.buzz(250);
-    } else if (seg.kind === 'work' || seg.kind === 'warm') {
-      Sound.go();
-      Sound.buzz(150);
-    } else if (seg.kind === 'manual') {
-      Sound.go();
+      Signal.roundStart();
+    } else if (seg.kind === 'work' || seg.kind === 'warm' || seg.kind === 'manual') {
+      Signal.blockStart();
     }
-    Sound.say(this.speech(seg));
-  };
-
-  Engine.prototype.speech = function (seg) {
-    if (!seg) { return ''; }
-    if (seg.kind === 'rest') {
-      var nx = this.segment(this.idx + 1);
-      return 'Rest.' + (nx && nx.tag ? ' Next: ' + nx.tag + '.' : '');
-    }
-    if (seg.kind === 'prep') { return 'Get ready.'; }
-    var cue = seg.cues && seg.cues.length ? seg.cues[0].label : '';
-    return seg.title + '.' + (cue ? ' ' + cue + '.' : (seg.tag && seg.tag !== seg.title ? ' ' + seg.tag + '.' : ''));
   };
 
   /* Record what a step measured as it ends. */
@@ -273,13 +255,13 @@
         for (var n = 3; n >= 1; n--) {
           if (remaining <= n && remaining > n - 1 && !this.flags['t' + n] && seg.dur > n + 1) {
             this.flags['t' + n] = true;
-            Sound.tick();
+            Signal.count();
           }
         }
       }
       if (seg.warn && seg.dur > 20 && remaining <= 10 && remaining > 0 && !this.flags.warn) {
         this.flags.warn = true;
-        Sound.clap(2);
+        Signal.warn();
         this.emit('warn');
       }
       if (seg.cues && seg.cues.length) {
@@ -290,8 +272,7 @@
           var cue = seg.cues[ci];
           if (!first && cue && remaining > 0.5) {
             var onWarnBeat = seg.warn && Math.abs(cue.at - (seg.dur - 10)) < 0.6;
-            if (!onWarnBeat) { Sound.cue(cue.hot); }
-            Sound.say(cue.label);
+            if (!onWarnBeat) { Signal.cue(cue.hot); }
           }
           this.emit('cue');
         }
@@ -302,8 +283,8 @@
       var overshoot = -remaining;
       this.leave(seg, seg.dur, true);
       if (!late) {
-        if (seg.kind === 'work' && seg.bell) { Sound.bell(3); Sound.buzz([200, 100, 200]); }
-        else if (seg.kind === 'work' || seg.kind === 'warm') { Sound.stop(); }
+        if (seg.kind === 'work' && seg.bell) { Signal.roundEnd(); }
+        else if (seg.kind === 'work' || seg.kind === 'warm') { Signal.blockEnd(); }
       }
       if (this.idx + 1 >= this.seq.segments.length) { this.finish(); return; }
       this.idx += 1;
@@ -312,9 +293,8 @@
       this.base = now() - overshoot * 1000;
       var nextSeg = this.segment();
       if (!late) {
-        var justRang = seg.kind === 'work' && seg.bell;
-        if (justRang && nextSeg.kind !== 'work') { Sound.say(this.speech(nextSeg)); }
-        else { this.enterSound(nextSeg, true); }
+        var roundJustEnded = seg.kind === 'work' && seg.bell;
+        if (!(roundJustEnded && nextSeg.kind !== 'work')) { this.signalEnter(nextSeg); }
       }
       this.emit('segment');
     }

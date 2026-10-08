@@ -7,7 +7,6 @@
 
   var Camp = window.Camp;
   var P = Camp.plan;
-  var Sound = Camp.Sound;
 
   /* ================= storage ================= */
 
@@ -60,8 +59,8 @@
     d = d && typeof d === 'object' ? d : {};
     var s = d.settings && typeof d.settings === 'object' ? d.settings : {};
     if (!parseIso(s.start)) { s.start = isoDate(mondayOf(today())); }
-    if (typeof s.sound !== 'boolean') { s.sound = true; }
-    if (typeof s.voice !== 'boolean') { s.voice = false; }
+    delete s.sound;
+    delete s.voice;
     if (['system', 'light', 'dark'].indexOf(s.theme) === -1) { s.theme = 'system'; }
     if (['tests', 'full'].indexOf(s.bagMode) === -1) { s.bagMode = 'tests'; }
     var c = s.custom && typeof s.custom === 'object' ? s.custom : {};
@@ -978,6 +977,35 @@
     $('tab-live').hidden = !(engine.running && ui.view !== 'timer');
   }
 
+  /* The timer is silent, so key moments flash the screen instead of ringing a bell. */
+  var FLASH_MS = 900;
+  var WASH = { start: 'red', go: 'red', end: 'blue', stop: 'blue', warn: 'amber', done: 'white' };
+  var FRAME = { hot: 'red', cue: 'white' };
+
+  function wireFlash() {
+    var flash = $('flash');
+    var clockEl = $('clock');
+    var flashTimer = null;
+    var pulseTimer = null;
+    Camp.Signal.on(function (kind) {
+      if (kind === 'count') {
+        clockEl.classList.remove('is-pulse');
+        void clockEl.offsetWidth;
+        clockEl.classList.add('is-pulse');
+        clearTimeout(pulseTimer);
+        pulseTimer = setTimeout(function () { clockEl.classList.remove('is-pulse'); }, 400);
+        return;
+      }
+      var tone = WASH[kind] || FRAME[kind];
+      if (!tone) { return; }
+      flash.className = 'flash';
+      void flash.offsetWidth;
+      flash.className = 'flash on ' + (WASH[kind] ? 'wash' : 'frame') + ' tone-' + tone;
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(function () { flash.className = 'flash'; }, FLASH_MS);
+    });
+  }
+
   function wireTimer() {
     $('btn-go').addEventListener('click', function () {
       var seg = engine.segment();
@@ -986,7 +1014,7 @@
       if (seg && seg.kind === 'manual' && !engine.running && (engine.held > 0 || engine.idx > 0)) { engine.next(); return; }
       engine.toggle();
     });
-    $('btn-next').addEventListener('click', function () { Sound.unlock(); engine.next(); });
+    $('btn-next').addEventListener('click', function () { engine.next(); });
     $('btn-prev').addEventListener('click', function () { engine.prev(); renderTimer('segment'); });
     $('btn-broke').addEventListener('click', function () { engine.formBroke(); toast('Hard rounds: ' + (engine.results.hard || 0) + ' of 8.'); });
     $('btn-again').addEventListener('click', function () { engine.reset(); });
@@ -1026,22 +1054,7 @@
       engine.setResult(key, v === '' ? '' : (isNaN(v) ? '' : Math.max(0, v)));
     });
 
-    $('opt-sound').checked = data.settings.sound;
-    $('opt-voice').checked = data.settings.voice;
-    Sound.enabled = data.settings.sound;
-    Sound.voice = data.settings.voice;
-    $('opt-sound').addEventListener('change', function () {
-      data.settings.sound = this.checked;
-      Sound.enabled = this.checked;
-      if (this.checked) { Sound.unlock(); Sound.beep(880, 0.1, 0.1); }
-      writeStore();
-    });
-    $('opt-voice').addEventListener('change', function () {
-      data.settings.voice = this.checked;
-      Sound.voice = this.checked;
-      if (this.checked) { Sound.unlock(); Sound.say('Voice on.'); }
-      writeStore();
-    });
+    wireFlash();
 
     document.addEventListener('keydown', function (e) {
       if (ui.view !== 'timer' || e.metaKey || e.ctrlKey || e.altKey) { return; }

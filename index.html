@@ -236,10 +236,7 @@
             </div>
           </div>
 
-          <div class="timer-options">
-            <label class="check"><input type="checkbox" id="opt-sound" checked> <span>Sound</span></label>
-            <label class="check"><input type="checkbox" id="opt-voice"> <span>Read out each round</span></label>
-          </div>
+          <p class="note silent-note">The timer is silent, so your music keeps playing. The screen flashes red when a round starts, amber 10 s before the round ends and blue when rest begins. Android phones also vibrate.</p>
           <p class="note">Space starts and pauses. N skips ahead. The screen stays on while the timer runs, where your browser allows it.</p>
         </div>
 
@@ -357,9 +354,10 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="flash" id="flash" aria-hidden="true"></div>
 
   <script src="js/plan.js"></script>
-  <script src="js/sound.js"></script>
+  <script src="js/signal.js"></script>
   <script src="js/timer.js"></script>
   <script src="js/app.js"></script>
 </body>
