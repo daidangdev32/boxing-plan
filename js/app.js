@@ -417,7 +417,7 @@
     card.appendChild(el('div', { class: 'next-head' }, [
       el('span', { class: 'badge', 'aria-hidden': 'true', text: info.letter }),
       el('div', null, [
-        el('h3', { class: 'next-name', text: key === 'BAG' ? 'Bag day' : 'Session ' + key + ': ' + info.name.toLowerCase() }),
+        el('h3', { class: 'next-name', text: key === 'BAG' ? 'Long bag day' : 'Session ' + key + ': ' + info.name.toLowerCase() }),
         el('p', { class: 'next-meta', text: sessionMeta(info) + '. ' + info.focus + '.' })
       ])
     ]));
@@ -437,8 +437,9 @@
     } else {
       var hp = P.homePlan(week, key);
       if (hp.fightSim) {
-        card.appendChild(el('p', { class: 'next-line', text: '6 × 3 min jab-led shadow rounds with 1 min rest. Box it like a real fight.' }));
+        card.appendChild(el('p', { class: 'next-line', text: '6 × 3 min jab-led bag rounds with 1 min rest. Box it like a real fight.' }));
       } else {
+        card.appendChild(el('p', { class: 'next-line' }, [el('strong', { text: 'Shadow: ' }), hp.shadow]));
         card.appendChild(roundChips(hp.rounds));
         card.appendChild(el('p', { class: 'next-line' }, [el('strong', { text: 'Conditioning: ' }), hp.conditioning]));
       }
@@ -446,7 +447,7 @@
 
     var actions = el('div', { class: 'next-actions' }, [
       el('button', { type: 'button', class: 'btn btn-go', text: startLabel, onclick: function () { openTimer(week, timerIdFor(key)); } }),
-      el('button', { type: 'button', class: 'btn btn-quiet', text: 'Mark done', onclick: function () { setDone(week, key, true); toast((key === 'BAG' ? 'Bag day' : 'Session ' + key) + ' marked done.'); renderToday(); } })
+      el('button', { type: 'button', class: 'btn btn-quiet', text: 'Mark done', onclick: function () { setDone(week, key, true); toast((key === 'BAG' ? 'Long bag day' : 'Session ' + key) + ' marked done.'); renderToday(); } })
     ]);
     if (key === 'BAG') {
       actions.appendChild(el('button', { type: 'button', class: 'btn btn-quiet', text: data.settings.bagMode === 'tests' ? 'Full session instead' : 'Test day instead', onclick: function () {
@@ -470,7 +471,7 @@
     P.ORDER.forEach(function (key) {
       var info = P.sessionInfo(week, key);
       var isDone = !!d[key];
-      var name = key === 'BAG' ? 'Bag day' : 'Session ' + key + ': ' + info.name.toLowerCase();
+      var name = key === 'BAG' ? 'Long bag day' : 'Session ' + key + ': ' + info.name.toLowerCase();
       var row = el('li', { class: 'session-row' + (isDone ? ' is-done' : '') }, [
         el('span', { class: 'badge badge-small', 'aria-hidden': 'true', text: info.letter }),
         el('div', null, [
@@ -528,9 +529,9 @@
       week === rawWeek() ? el('li', { text: 'This week' }) : null
     ]);
     var notes = [];
-    if (rr.round === 120) { notes.push('2-minute rounds, so home sessions get a 5th round: jab-led freestyle.'); }
+    if (rr.round === 120) { notes.push('2-minute rounds, so 30-min sessions get a 5th bag round: jab-led freestyle.'); }
     if (P.isDeload(week)) { notes.push('Deload: drop one round and halve the conditioning.'); }
-    if (week === 12) { notes.push('Week 12: test benchmarks on bag day, and make your last home session a fight simulation.'); }
+    if (week === 12) { notes.push('Week 12: test benchmarks on the long bag day, and make your last 30-min session a fight simulation.'); }
     notes.push('Move up a round length only when your form holds for the full round.');
 
     root.appendChild(el('div', { class: 'week-head' }, [
@@ -583,10 +584,11 @@
     art.appendChild(head);
     art.appendChild(line('Warm-up', plan.warmup));
     if (plan.fightSim) {
-      var ol = el('ol', { class: 'rounds' }, [el('li', { class: 'is-fight' }, [el('span', { class: 'round-text', text: '3-min jab-led shadow rounds with 1 min rest. Jab, move and counter like it’s a real fight.' })])]);
+      var ol = el('ol', { class: 'rounds' }, [el('li', { class: 'is-fight' }, [el('span', { class: 'round-text', text: '6 × 3-min jab-led bag rounds with 1 min rest. Jab, move, counter and exit like it’s a real fight.' })])]);
       art.appendChild(el('div', null, [el('span', { class: 'line-label', text: 'Rounds, 3:00 each' }), ol]));
     } else {
-      art.appendChild(el('div', null, [el('span', { class: 'line-label', text: 'Shadowboxing rounds, ' + P.clock(rr.round) + ' each, ' + P.clock(rr.rest) + ' rest' }), roundsList(plan.rounds)]));
+      art.appendChild(line('Shadow round', plan.shadow));
+      art.appendChild(el('div', null, [el('span', { class: 'line-label', text: 'Bag rounds, ' + P.clock(rr.round) + ' each, ' + P.clock(rr.rest) + ' rest' }), roundsList(plan.rounds)]));
       art.appendChild(line('Conditioning', plan.conditioning));
       art.appendChild(line('Core', plan.core));
     }
@@ -601,7 +603,7 @@
     var mode = data.settings.bagMode;
     var plan = P.bagPlan(week, mode);
     var art = el('article', { class: 'session', id: 'plan-BAG', 'aria-labelledby': 'plan-BAG-name' });
-    var head = sessionHead(plan.info, 'Bag day', 'Gym, 60 min. One a week, whenever you can get to a bag.');
+    var head = sessionHead(plan.info, 'Long bag day', '60 min. Everything on the bag, plus the weekly tests.');
     head.querySelector('h3').id = 'plan-BAG-name';
     art.appendChild(head);
 
@@ -673,8 +675,8 @@
     return [
       ['A', 'A: jab & range'],
       ['B', 'B: counter power'],
-      ['BAG-tests', 'Bag day: test day'],
-      ['BAG-full', 'Bag day: full session'],
+      ['BAG-tests', 'Long bag day: test day'],
+      ['BAG-full', 'Long bag day: full session'],
       ['C', week === 12 ? 'C: fight simulation' : 'C: ' + c.name.toLowerCase()]
     ];
   }
@@ -909,7 +911,7 @@
       mark.hidden = false;
       mark.disabled = already;
       mark.className = 'btn ' + (resultKeys(seq).length ? 'btn-quiet' : 'btn-go');
-      mark.textContent = already ? 'Marked done' : 'Mark ' + (seq.session === 'BAG' ? 'bag day' : 'session ' + seq.session) + ' done for week ' + seq.week;
+      mark.textContent = already ? 'Marked done' : 'Mark ' + (seq.session === 'BAG' ? 'long bag day' : 'session ' + seq.session) + ' done for week ' + seq.week;
     } else {
       mark.hidden = true;
     }
@@ -1556,8 +1558,7 @@
   ];
 
   var TERMS = [
-    ['Range round', 'A round spent on distance. Touch the target with the jab, step out of range, reset. At home that’s the wall target, at the gym it’s the bag.'],
-    ['Wall target', 'A strip of tape on a wall or door at chin height. Jab to just short of it, step out, reset.'],
+    ['Range round', 'Bag round 1 every session. Touch the bag with the jab, step out of range, reset.'],
     ['Sit down on the punch', 'Bend your knees a little as you turn your hips, so your bodyweight goes into the shot.'],
     ['Slip', 'Move your head just off the centre line, by bending your knees and turning your shoulders, so a straight punch goes past.'],
     ['Roll', 'Bend your knees and move your head in a U shape under a hook, coming up on the other side.'],

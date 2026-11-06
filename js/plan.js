@@ -17,13 +17,13 @@
   var ORDER = ['A', 'B', 'BAG', 'C'];
 
   var SESSIONS = {
-    A: { key: 'A', letter: 'A', name: 'Jab & range', where: 'Home', minutes: 30, focus: 'Jab, distance, footwork', conditioning: 'Jump rope' },
-    B: { key: 'B', letter: 'B', name: 'Counter power', where: 'Home', minutes: 30, focus: 'Hard counters, body shots', conditioning: 'Bodyweight circuit' },
-    BAG: { key: 'BAG', letter: 'Bag', name: 'Bag day', where: 'Gym', minutes: 60, focus: 'Everything, on the bag', conditioning: 'Weekly tests or bag finisher' },
-    C: { key: 'C', letter: 'C', name: 'Pace & defense', where: 'Home', minutes: 30, focus: 'Guard, pull counters, output', conditioning: 'Intervals' }
+    A: { key: 'A', letter: 'A', name: 'Jab & range', where: 'Bag', minutes: 30, focus: 'Jab variety, distance and exits at 60–70% power', conditioning: 'Jump rope' },
+    B: { key: 'B', letter: 'B', name: 'Counter power', where: 'Bag', minutes: 30, focus: 'Hard counters and body shots at full power', conditioning: 'Bodyweight circuit' },
+    BAG: { key: 'BAG', letter: 'L', name: 'Long bag day', where: 'Bag', minutes: 60, focus: 'Everything on the bag, plus weekly tests', conditioning: 'Weekly tests or bag finisher' },
+    C: { key: 'C', letter: 'C', name: 'Pace & defense', where: 'Bag', minutes: 30, focus: 'Guard switching, close range and output at 70%', conditioning: 'Intervals' }
   };
 
-  var FIGHT_SIM = { key: 'C', letter: 'C', name: 'Fight simulation', where: 'Home', minutes: 30, focus: '6 jab-led rounds at fight pace', conditioning: 'The rounds are the conditioning' };
+  var FIGHT_SIM = { key: 'C', letter: 'C', name: 'Fight simulation', where: 'Bag', minutes: 30, focus: '6 jab-led bag rounds at fight pace', conditioning: 'The rounds are the conditioning' };
 
   /* Sub-round patterns: the timer beeps when the drill switches. */
   var PATTERNS = {
@@ -42,35 +42,38 @@
   }
   var NO = { noOpener: true };
 
-  var FOOTWORK = 'Footwork: in, out, side to side, pivots.';
+  var RANGE = r('Range round', 'Range round: touch with the jab, step out, reset.');
 
   var HOME = {
     1: {
       A: {
+        shadow: 'Footwork, then jab only.',
         rounds: [
-          r('Footwork', FOOTWORK, NO),
-          r('Jab only', 'Jab only: singles, doubles, jab to the body.', NO),
-          r('Wall target', 'Wall target: jab to just short of the tape, step out, reset.', NO),
+          RANGE,
+          r('Jab variety', 'Jab variety: touch jab, double jab, jab to the body, step left then jab.'),
+          r('Jab with exit', 'Jab then step out. Jab, pull back, then 2.'),
           r('1-2, pivot out', '1-2, then pivot out.')
         ],
         cond: { type: 'rope', sets: 2, dur: 180, rest: 30 },
         core: { type: 'hold', name: 'Plank', sets: 2, dur: 30 }
       },
       B: {
+        shadow: 'Slip, then 2-3.',
         rounds: [
-          r('Footwork', FOOTWORK, NO),
-          r('Explosive 1-2', 'Explosive 1-2, sitting down on the 2.'),
-          r('Slip, 2-3', 'Slip, then 2-3.'),
-          r('Body jab, head 2', 'Jab to the body, then 2 to the head, full intent.')
+          RANGE,
+          r('Power 1-2', 'Power 1-2, sitting down on the 2.'),
+          r('Slip, 2-3, out', 'Slip outside, then 2-3, then step out.'),
+          r('Body jab, head 2', 'Jab to the body, then 2 to the head, full intent, then pivot.')
         ],
         cond: { type: 'circuit', rounds: 2, items: '10 push-ups, 15 squats and 10 burpees', rest: 60 },
         core: { type: 'reps', name: 'Leg raises', sets: 2, reps: 15 }
       },
       C: {
+        shadow: 'Switch between long guard and high guard every few seconds, with footwork.',
         rounds: [
-          r('Guard, pull backs', 'High guard and pull backs.'),
-          r('Pull back, 2', 'Pull back, then 2.'),
-          r('Catch, 1-2', 'Catch the jab, then 1-2.'),
+          RANGE,
+          r('Catch, pull counter', 'Catch and jab back, then pull back and 2.'),
+          r('Close range', 'Close range: high guard tight to the bag, short hooks and uppercuts, then step out.'),
           r('Nonstop 1-2s', 'Nonstop 1-2s, with a 10 s sprint every 30 s.', { pattern: 'sprint' })
         ],
         cond: { type: 'intervals', reps: 7, work: 30, rest: 30, label: 'High knees or burpees' },
@@ -79,30 +82,33 @@
     },
     2: {
       A: {
+        shadow: 'Jab feints and guard switching.',
         rounds: [
-          r('Feints, footwork', 'Jab feints and footwork.', NO),
-          r('1-1-2', '1-1-2.', NO),
-          r('Wall target, step back', 'Wall target: jab, step back, then 1-2 as the opponent follows.', NO),
-          r('Jab-led freestyle', 'Jab-led freestyle, with an angle after every combo.', NO)
+          RANGE,
+          r('Double jab, body-head', 'Double jab with a step, then jab to the body and jab to the head.'),
+          r('Follow the slip', 'Jab, then 2 (he slipped inside) or 3 (he slipped outside), then out.'),
+          r('Flicker, long hook', 'Flicker, long hook, 2 to the body, 1-2, pivot out.')
         ],
         cond: { type: 'rope', sets: 2, dur: 180, rest: 30, note: 'with a 15 s burst every minute', pattern: 'ropeBurst' },
         core: { type: 'hold', name: 'Plank with shoulder taps', sets: 2, dur: 40 }
       },
       B: {
+        shadow: 'Pull back, then 2-3.',
         rounds: [
-          r('Footwork, pivots', 'Footwork and pivots.', NO),
-          r('Pull back, 2-3', 'Pull back, then 2-3.'),
-          r('Slip, body 2, head 3', 'Slip, 2 to the body, then 3 to the head.'),
+          RANGE,
+          r('Counter the hook', 'Picture his hook, 2 straight down the middle, then 3, then out.'),
+          r('Slip, body 2, head 3', 'Slip outside, 2 to the body, then 3 to the head.'),
           r('Counters, jab and move', 'Alternate 15 s of explosive counters with 15 s of jab and move.', { pattern: 'counters15' })
         ],
         cond: { type: 'circuit', rounds: 3, items: '12 push-ups, 10 jump squats and 8 burpees', rest: 45 },
         core: { type: 'hold', name: 'Hollow hold', sets: 2, dur: 30 }
       },
       C: {
+        shadow: 'Picture his combo, cut it off with one shot, pivot out.',
         rounds: [
-          r('Pull back, 2', 'Pull back, then 2.'),
-          r('Roll, 3-2', 'Roll, then 3-2.'),
-          r('Pressure, counters', 'Alternate 30 s of jab pressure with 30 s of counters and exits.', { pattern: 'pressure30', noOpener: true }),
+          RANGE,
+          r('Pressure, counters', 'Alternate 30 s of jab pressure with 30 s of counters and exits.', { pattern: 'pressure30' }),
+          r('Close range', 'Close range: high guard, cut his combo off with a short 2 or hook, frame off, pivot out.'),
           r('Nonstop 1-2s', 'Nonstop 1-2s, with a 10 s sprint every 30 s.', { pattern: 'sprint' })
         ],
         cond: { type: 'intervals', reps: 7, work: 40, rest: 20, label: 'Burpee-sprawls or punch-outs' },
@@ -111,18 +117,20 @@
     },
     3: {
       A: {
+        shadow: 'Feint, then the real jab.',
         rounds: [
-          r('Speed jabs', '10 s of max-speed jabs, then 20 s of movement, repeated.', { pattern: 'speedJabs', noOpener: true }),
-          r('Feint, 2-3', 'Feint, then 2-3.'),
-          r('Wall target at speed', 'Wall target at speed: in-out jabs and doubles.', NO),
-          r('Fast combos', 'Fast 1-2, 1-1-2 and 1-2-3, retracting fast.')
+          RANGE,
+          r('Speed jabs', '10 s of max-speed jabs, then 20 s of movement, repeated.', { pattern: 'speedJabs' }),
+          r('1-2-3, out', '1-2-3 with a short hook, then pivot or step out every time.'),
+          r('Feint mix', 'Feint, then 2-3. Feint, 1-2, pivot. Mix them.')
         ],
         cond: { type: 'rope', sets: 2, dur: 180, rest: 30, note: 'hard' },
         core: { type: 'hold', name: 'Side plank', sets: 2, dur: 30, sides: true }
       },
       B: {
+        shadow: 'Counters at full intent.',
         rounds: [
-          r('Footwork, full intent', 'Footwork at full intent.', NO),
+          RANGE,
           r('Counters, jab and move', 'Alternate 10 s of explosive counters with 20 s of jab and move.', { pattern: 'counters10' }),
           r('Counters, jab and move', 'Alternate 10 s of explosive counters with 20 s of jab and move.', { pattern: 'counters10' }),
           r('Counters, jab and move', 'Alternate 10 s of explosive counters with 20 s of jab and move.', { pattern: 'counters10' })
@@ -131,11 +139,12 @@
         core: { type: 'reps', name: 'V-ups', sets: 2, reps: 12 }
       },
       C: {
+        shadow: 'Guard switching at fight pace.',
         rounds: [
-          r('Jab-led output', 'Steady, high, jab-led output.', NO),
-          r('Jab-led output', 'Steady, high, jab-led output.', NO),
-          r('Jab-led output', 'Steady, high, jab-led output.', NO),
-          r('Max output', 'Jab-heavy round at max output.', NO)
+          r('Jab-led output', 'Steady, high, jab-led output with exits.'),
+          r('Jab-led output', 'Steady, high, jab-led output with exits.'),
+          r('Jab-led output', 'Steady, high, jab-led output with exits.'),
+          r('Max output', 'Jab-heavy round at max output.')
         ],
         cond: { type: 'intervals', reps: 4, work: 60, rest: 30, label: 'Burpee-sprawls' },
         core: { type: 'hold', name: 'Plank', sets: 2, dur: 60 }
@@ -143,42 +152,45 @@
     }
   };
 
-  var EXTRA_ROUND = r('Jab-led freestyle', 'Jab-led freestyle.', NO);
+  var EXTRA_ROUND = r('Jab-led freestyle', 'Jab-led freestyle, with an exit after every combo.');
 
   var BAG_SHADOW = [
-    r('Footwork', FOOTWORK, NO),
-    r('Jab only', 'Jab only: singles, doubles, jab to the body.', NO)
+    r('Footwork', 'Footwork: in, out, side to side, pivots.'),
+    r('Jab only', 'Jab only: singles, doubles, jab to the body.')
   ];
 
   var BAG_ROUNDS = [
-    r('Range round', 'Range round: jab, step out, reset.', NO),
-    r('Jab only', 'Jab only: doubles, body, head.', NO),
+    r('Range round', 'Range round: jab, step out, reset.'),
+    r('Jab variety', 'Jab variety: touch, double, body, step left then jab.'),
     r('1-2, pivot out', '1-2, then pivot out.'),
     r('Power 1-2s', 'Power 1-2s with a full hip turn.'),
-    r('Body jab, head 2', 'Jab to the body, then 2 to the head.'),
+    r('Flicker, long hook', 'Flicker, long hook, 2 to the body, 1-2, out.'),
     r('Step back, 2', 'Step back, then 2 as the opponent follows.'),
     r('Nonstop 1-2s', 'Nonstop 1-2s, with a 10 s sprint every 30 s.', { pattern: 'sprint' }),
-    r('Push through', 'A full 3 min, jab-led, pushing through tired.', { noOpener: true, fixedDur: 180 })
+    r('Push through', 'A full 3 min, jab-led, pushing through tired.', { fixedDur: 180 })
   ];
 
   var LIGHT_ROUNDS = [
-    r('Range round', 'Light: range round. Jab, step out, reset.', NO),
-    r('1-2, pivot out', 'Light: 1-2, then pivot out.', NO)
+    r('Range round', 'Light: range round. Jab, step out, reset.'),
+    r('1-2, pivot out', 'Light: 1-2, then pivot out.')
   ];
 
   var RULES = [
-    'Open every round with 30 s of jab only.',
-    'Every session has one range round: the wall target at home, the bag at the gym.',
-    'Throw no more than 3 punches, then pivot or step out at an angle.',
-    'Keep a high guard and your chin down. Never stand square.',
-    'Keep your output steady. Clean at 80% beats sloppy at 100%.',
-    'No dumbbells while shadowboxing.'
+    'Wrap your hands every session.',
+    'Bag round 1 is always a range round: touch with the jab, step out, reset.',
+    'Every combo ends with an exit: step out, pivot, pull back or roll. No standing still after the last punch.',
+    'Rear hand stays on your cheek, lead elbow near your ribs.',
+    'Snap punches back faster than you throw them. Keep the 3 short and tight.',
+    'Change your rhythm: singles, doubles, pauses, feints. Never the same jab twice in a row.',
+    'No more than 2 rounds of stiff jabs per session, to protect the lead shoulder.',
+    'Stop bag work if your wrist or shoulder gives sharp pain.'
   ];
 
   var HOME_STRUCTURE = [
-    ['0–4', 'Jump rope 3 min, then mobility 1 min'],
-    ['4–20', '4 shadowboxing rounds. On 2-min rounds, add a 5th: jab-led freestyle'],
-    ['20–27', 'Conditioning'],
+    ['0–4', 'Jump rope 3 min, then shoulder and wrist mobility 1 min'],
+    ['4–7', '1 shadowboxing round to warm up the punches'],
+    ['7–21', '4 bag rounds. On 2-min rounds, add a 5th: jab-led freestyle'],
+    ['21–27', 'Conditioning'],
     ['27–30', 'Core, then stretch']
   ];
 
@@ -305,8 +317,8 @@
       return {
         key: key, week: week, info: info, fightSim: true,
         warmup: 'Jump rope 3 min, then mobility 1 min.',
-        rounds: [r('Fight rounds', '6 × 3 min jab-led shadow rounds with 1 min rest. Jab, move, counter, like it’s a real fight.', NO)],
-        notes: ['Week 12: your last home session is a fight simulation.'],
+        rounds: [r('Fight rounds', '6 × 3 min jab-led bag rounds with 1 min rest. Jab, move, counter, exit, like it’s a real fight.')],
+        notes: ['Week 12: your last 30-min session is a fight simulation.'],
         finish: 'Then stretch: shoulders, chest, hips and calves.'
       };
     }
@@ -317,7 +329,8 @@
     if (deload) { notes.push('Deload week: the last round is dropped and the conditioning is halved.'); }
     return {
       key: key, week: week, info: info,
-      warmup: 'Jump rope 3 min, then mobility 1 min.',
+      warmup: 'Jump rope 3 min, then shoulder and wrist mobility 1 min.',
+      shadow: data.shadow,
       rounds: homeRounds(week, key),
       conditioning: conditioningText(cond),
       core: coreText(data.core),
@@ -398,7 +411,7 @@
       tag: round.tag,
       detail: round.text,
       dur: d,
-      cues: buildCues(d, !round.noOpener, round.pattern, round.tag)
+      cues: buildCues(d, !!round.opener, round.pattern, round.tag)
     };
   }
 
@@ -461,22 +474,24 @@
     week = clampWeek(week);
     var info = sessionInfo(week, key);
     var rr = roundsFor(week);
-    var segs = [prepSeg()];
+    var segs = [prepSeg('Have your wraps and gloves ready.')];
     segs.push({ kind: 'warm', title: 'Warm-up: jump rope', tag: 'Jump rope', detail: 'Easy rhythm, light on the balls of your feet.', dur: 180 });
-    segs.push({ kind: 'warm', title: 'Warm-up: mobility', tag: 'Mobility', detail: 'Arm circles, hips, upper back and ankles.', dur: 60 });
+    segs.push({ kind: 'warm', title: 'Warm-up: mobility', tag: 'Mobility', detail: 'Arm circles, wrist circles, hips, upper back and ankles.', dur: 60 });
     segs.push(restSeg(15, 'Get in stance'));
 
     if (key === 'C' && week === 12) {
       var fight = [];
-      for (var f = 0; f < 6; f++) { fight.push(r('Fight round', 'Jab-led shadowboxing at fight pace. Jab, move, counter.', NO)); }
+      for (var f = 0; f < 6; f++) { fight.push(r('Fight round', 'Jab-led bag round at fight pace. Jab, move, counter, exit.')); }
       addRounds(segs, fight, 180, 60, 'Fight round');
       segs.push(stretchSeg());
       return { id: 'w' + week + '-C', name: 'Week 12: fight simulation', week: week, session: key, segments: segs };
     }
 
-    var rounds = homeRounds(week, key).filter(function (x) { return !x.dropped; });
-    addRounds(segs, rounds, rr.round, rr.rest, 'Round');
     var data = HOME[phaseOf(week).id][key];
+    segs.push({ kind: 'work', bell: true, warn: true, title: 'Shadow round', tag: 'Shadowboxing', detail: data.shadow + ' Wrap your hands after this.', dur: rr.round, cues: [] });
+    segs.push(restSeg(rr.rest, 'Rest, then to the bag'));
+    var rounds = homeRounds(week, key).filter(function (x) { return !x.dropped; });
+    addRounds(segs, rounds, rr.round, rr.rest, 'Bag round');
     segs.push(restSeg(60, 'Rest before conditioning'));
     addConditioning(segs, conditioningFor(data.cond, isDeload(week)));
     segs.push(restSeg(20, 'Rest before core'));
@@ -535,7 +550,7 @@
         addBagWork(segs, week, true);
       }
       segs.push({ kind: 'manual', title: 'Plank, then stretch', tag: 'Stretch', detail: 'Plank as long as you like, then shoulders, chest, hips and calves.' });
-      return { id: 'w' + week + '-BAG-tests', name: 'Week ' + week + ': bag day with tests', week: week, session: 'BAG', tests: true, segments: segs };
+      return { id: 'w' + week + '-BAG-tests', name: 'Week ' + week + ': long bag day with tests', week: week, session: 'BAG', tests: true, segments: segs };
     }
     addBagWork(segs, week, false);
     segs.push({ kind: 'manual', title: 'Plank, then stretch', tag: 'Stretch', detail: 'Plank as long as you like, then shoulders, chest, hips and calves.' });
